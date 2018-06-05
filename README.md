@@ -64,12 +64,12 @@ xyz_export.sheet({
             不设置title时,默认不显示sheet标题<br/>
             <table>
                 <tr>
-                    <td>text</td>
+                    <td>title.text</td>
                     <td>标题名字</td>
                     <td>如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]</td>
                 </tr>
                 <tr>
-                    <td>height</td>
+                    <td>title.height</td>
                     <td>标题高度</td>
                     <td>默认50</td>
                 </tr>
@@ -83,32 +83,32 @@ xyz_export.sheet({
         <td>
             <table>
                 <tr>
-                    <td>headHeight</td>
+                    <td>style.headHeight</td>
                     <td>表头高度</td>
                     <td>默认15</td>
                 </tr>
                 <tr>
-                    <td>rowHeight</td>
+                    <td>style.rowHeight</td>
                     <td>行高</td>
                     <td>默认13.5</td>
                 </tr>
                 <tr>
-                    <td>fontColor</td>
+                    <td>style.fontColor</td>
                     <td>字体颜色</td>
                     <td>默认#000000</td>
                 </tr>
                 <tr>
-                    <td>border</td>
+                    <td>style.border</td>
                     <td>object</td>
                     <td>
                         <table>
                             <tr>
-                                <td>style</td>
+                                <td>border.<a href='#borderStyle'>style</a></td>
                                 <td>边框类型</td>
                                 <td>默认无边框</td>
                             </tr>
                             <tr>
-                                <td>color</td>
+                                <td>border.color</td>
                                 <td>边框颜色</td>
                                 <td>默认#000000</td>
                             </tr>
@@ -144,5 +144,18 @@ xyz_export.sheet({
 </table>
 
 
-
+# borderStyle
+- default   /*Continuous*/
+- default1
+- default2
+- default3
+- dot
+- dash
+- dash1
+- dashDot
+- dashDot1
+- dashDots  /*dashDotDot*/
+- dashDots1
+- slantDashDot
+- double
 
