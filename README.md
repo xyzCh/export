@@ -1,5 +1,6 @@
 export
-===`导出excel表格很简陋 haha`  
+===
+`导出excel表格很简陋 haha`  
 
 Docs
 ---
@@ -41,7 +42,7 @@ xyz_export.sheet({
 |data|array|要导出的数据|undefined|
 |[sheets](#sheet)|array|[sheet](#sheet)设置的集合|undefined|
 
-##### sheet
+#### sheet
 <table>
     <tr>
         <th>名称</th>
@@ -60,9 +61,19 @@ xyz_export.sheet({
         <td>object</td>
         <td>工作表标题设置</td>
         <td>
-            不设置title时,默认不显示sheet标题
-            text:标题名字       如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]
-            height:标题高度     默认50
+            不设置title时,默认不显示sheet标题<br/>
+            <table>
+                <tr>
+                    <td>text</td>
+                    <td>标题名字</td>
+                    <td>如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]</td>
+                </tr>
+                <tr>
+                    <td>height</td>
+                    <td>标题高度</td>
+                    <td>默认50</td>
+                </tr>
+            </table>
         </td>
     </tr>
     <tr>
@@ -70,13 +81,41 @@ xyz_export.sheet({
         <td>object</td>
         <td>工作表样式设置</td>
         <td>
-            headHeight:表头高度     默认15
-            rowHeight:行高        默认13.5
-            fontColor:字体颜色      默认#000000
-            border:{
-                        style:边框类型      默认无边框
-                        color:边框颜色      默认#000000
-            }
+            <table>
+                <tr>
+                    <td>headHeight</td>
+                    <td>表头高度</td>
+                    <td>默认15</td>
+                </tr>
+                <tr>
+                    <td>rowHeight</td>
+                    <td>行高</td>
+                    <td>默认13.5</td>
+                </tr>
+                <tr>
+                    <td>fontColor</td>
+                    <td>字体颜色</td>
+                    <td>默认#000000</td>
+                </tr>
+                <tr>
+                    <td>border</td>
+                    <td>object</td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>style</td>
+                                <td>边框类型</td>
+                                <td>默认无边框</td>
+                            </tr>
+                            <tr>
+                                <td>color</td>
+                                <td>边框颜色</td>
+                                <td>默认#000000</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
     <tr>
@@ -84,9 +123,22 @@ xyz_export.sheet({
         <td>array</td>
         <td>工作表数据列设置</td>
         <td>
-            field:列字段,和data中的字段对应
-            text:列标题    为空时默认为column[1,2,3,...]
-            width:列宽
+            <table>
+                <tr>
+                    <td>field</td>
+                    <td>列字段</td>
+                    <td>与data中的字段对应</td>
+                <tr>
+                    <td>text</td>
+                    <td>列标题</td>
+                    <td>为空时默认为column[1,2,3,...]</td>
+                </tr>
+                <tr>
+                    <td>width</td>
+                    <td>列宽</td>
+                    <td></td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
