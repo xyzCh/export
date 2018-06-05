@@ -34,6 +34,7 @@ xyz_export.sheet({
 });
 ```
 **配置**
+
 |名称|类型|描述|默认值|
 |:--:|:--:|:--:|:--:|
 |fileName|string|导出的文件名|exportSheet.xls|
@@ -58,11 +59,10 @@ xyz_export.sheet({
         <td>title</td>
         <td>object</td>
         <td>工作表标题设置</td>
-        <td>不设置title时,默认不显示sheet标题
-```
-text:标题名字       如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]
-height:标题高度     默认50
-```
+        <td>
+            不设置title时,默认不显示sheet标题
+            text:标题名字       如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]
+            height:标题高度     默认50
         </td>
     </tr>
     <tr>
@@ -70,15 +70,13 @@ height:标题高度     默认50
         <td>object</td>
         <td>工作表样式设置</td>
         <td>
-```
-headHeight:表头高度     默认15
-rowHeight:行高        默认13.5
-fontColor:字体颜色      默认#000000
-border:{
-            style:边框类型      默认无边框
-            color:边框颜色      默认#000000
+            headHeight:表头高度     默认15
+            rowHeight:行高        默认13.5
+            fontColor:字体颜色      默认#000000
+            border:{
+                        style:边框类型      默认无边框
+                        color:边框颜色      默认#000000
             }
-```
         </td>
     </tr>
     <tr>
@@ -86,11 +84,9 @@ border:{
         <td>array</td>
         <td>工作表数据列设置</td>
         <td>
-```
-field:列字段,和data中的字段对应
-text:列标题    为空时默认为column[1,2,3,...]
-width:列宽
-```
+            field:列字段,和data中的字段对应
+            text:列标题    为空时默认为column[1,2,3,...]
+            width:列宽
         </td>
     </tr>
 </table>
