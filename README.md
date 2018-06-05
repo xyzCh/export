@@ -144,8 +144,8 @@ xyz_export.sheet({
 </table>
 
 
-# borderStyle
-- default　　\*Continuous\*
+#### borderStyle
+- default　　/\*Continuous\*/
 - default1
 - default2
 - default3
@@ -154,7 +154,7 @@ xyz_export.sheet({
 - dash1
 - dashDot
 - dashDot1
-- dashDots　　\*dashDotDot\*
+- dashDots　　/\*dashDotDot\*/
 - dashDots1
 - slantDashDot
 - double
