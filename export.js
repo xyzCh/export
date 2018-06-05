@@ -7,6 +7,7 @@ var xyz_export = function () {
     let def_opt = {
         rowHeight: 13.5,
         headHeight: 0,
+        fontColor:"#000000",
         border: {
             style: "",
             color: ""
@@ -79,7 +80,7 @@ var xyz_export = function () {
 
     function generate_style(s, k) {
         let border;
-        let fontColor = s.fontColor || "#000000";
+        let fontColor = s.fontColor;
         if (border_style[s.border.style]){
             let style = border_style[s.border.style].split(",")[0];
             let width = border_style[s.border.style].split(",")[1];
@@ -91,7 +92,7 @@ var xyz_export = function () {
         }
         else
             boder = "";
-        let style = `<Style ss:ID="cs${k + 1}">
+        let style = `<Style ss:ID="cs${k}">
             <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
             <Borders>
             ${border}
