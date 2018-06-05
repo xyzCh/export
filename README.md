@@ -1,10 +1,8 @@
 export
-===
-`导出excel表格很简陋 haha`  
+===`导出excel表格很简陋 haha`  
 
 Docs
 ---
-***
 **用法**
 ```
 xyz_export.sheet({
@@ -35,4 +33,11 @@ xyz_export.sheet({
     ]
 });
 ```
+配置
+---
+|名称|类型|描述|默认值|
+|:--:|:--:|:--:|:--:|
+|sheetName|string|导出的文件名|exportSheet.xls|
+|data|array|要导出的数据|undefined|
+|sheets|array|sheet设置的集合|undefined|
 
