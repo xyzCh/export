@@ -103,7 +103,7 @@ xyz_export.sheet({
                     <td>
                         <table>
                             <tr>
-                                <td>border.<a href='#borderStyle'>style</a></td>
+                                <td>border.<a href='#borderstyle'>style</a></td>
                                 <td>边框类型</td>
                                 <td>默认无边框</td>
                             </tr>
@@ -145,7 +145,7 @@ xyz_export.sheet({
 
 
 # borderStyle
-- default   /*Continuous*/
+- default   \*Continuous\*
 - default1
 - default2
 - default3
@@ -154,7 +154,7 @@ xyz_export.sheet({
 - dash1
 - dashDot
 - dashDot1
-- dashDots  /*dashDotDot*/
+- dashDots  \*dashDotDot\*
 - dashDots1
 - slantDashDot
 - double
