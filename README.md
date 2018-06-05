@@ -53,7 +53,7 @@ xyz_export.sheet({
     <tr>
         <td>sheetName</td>
         <td>string</td>
-        <td>每个工作表的名</td>
+        <td>每个工作表的名字</td>
         <td>如果title.text已设置,则默认title.text,当两者都未设置则为sheet[1,2,...]</td>
     </tr>
     <tr>
@@ -145,7 +145,7 @@ xyz_export.sheet({
 
 
 # borderStyle
-- default   \*Continuous\*
+- default　　\*Continuous\*
 - default1
 - default2
 - default3
@@ -154,7 +154,7 @@ xyz_export.sheet({
 - dash1
 - dashDot
 - dashDot1
-- dashDots  \*dashDotDot\*
+- dashDots　　\*dashDotDot\*
 - dashDots1
 - slantDashDot
 - double
