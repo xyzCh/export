@@ -103,7 +103,7 @@ xyz_export.sheet({
                     <td>
                         <table>
                             <tr>
-                                <td>border.<a href='#borderstyle'>style</a></td>
+                                <td>border.<a href='#borderstyle取值'>style</a></td>
                                 <td>边框类型</td>
                                 <td>默认无边框</td>
                             </tr>
