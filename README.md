@@ -144,7 +144,7 @@ xyz_export.sheet({
 </table>
 
 
-#### borderStyle
+#### border.Style取值
 - default　　/\*Continuous\*/
 - default1
 - default2
