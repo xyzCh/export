@@ -43,7 +43,7 @@ var xyz_export = function () {
             else
                 if (s[name] == tmp[name]) continue;
                 else
-                    tmp[name] = s[name];
+                    tmp[name] = s[name]||tmp[name];
         }
         return tmp;
     }
