@@ -164,7 +164,7 @@ var xyz_export = function () {
                     let cell = T_cell.cloneNode();
                     cell.setAttribute("ss:StyleID", "cs"+k);
                     let val=data[k][i][body[j].field ? body[j].field : function () { throw "Field is null";}()]?data[k][i][body[j].field]:"";
-                    cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val,i) : val;
+                    cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val,i,data[k][j]) : val;
                     row.appendChild(cell);//create data row
                 }
                 if (i == 0) {
