@@ -26,7 +26,7 @@ xyz_export.sheet({
                 }
             },
             body: [
-                { field: "a", text: "字段1", width: 50, formatter:function(value,row){
+                { field: "a", text: "字段1", width: 50, formatter:function(value,index,row){
                         .....
                         return value;
                     }
