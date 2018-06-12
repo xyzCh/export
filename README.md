@@ -26,7 +26,11 @@ xyz_export.sheet({
                 }
             },
             body: [
-                { field: "a", text: "字段1", width: 50 },
+                { field: "a", text: "字段1", width: 50, formatter:function(value,row){
+                        .....
+                        return value;
+                    }
+                },
                 { field: "b", text: "字段2", width: 50 },
                 { field: "c", text: "字段3", width: 50 }
             ]
@@ -137,6 +141,11 @@ xyz_export.sheet({
                     <td>width</td>
                     <td>列宽</td>
                     <td></td>
+                </tr>
+                <tr>
+                    <td>formatter</td>
+                    <td>格式化函数</td>
+                    <td>parameter1:字段值, parameter2:行索引, parameter3:行数据</td>
                 </tr>
             </table>
         </td>
