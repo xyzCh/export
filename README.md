@@ -12,6 +12,7 @@ xyz_export.sheet({
     sheets:[
         {
             sheetName:"sheet1",
+            rowNumber:true,
             title: {
                 text: "xx月xx日计划",
                 height: 50
@@ -31,7 +32,7 @@ xyz_export.sheet({
                         return value;
                     }
                 },
-                { field: "b", text: "字段2", width: 50 },
+                { field: "b", text: "字段2", width: 50, merge:true },//此列(相邻且相同)数据会发生合并
                 { field: "c", text: "字段3", width: 50 }
             ]
         },...
@@ -59,6 +60,12 @@ xyz_export.sheet({
         <td>string</td>
         <td>每个工作表的名字</td>
         <td>如果title.text已设置,则默认title.text,当两者都未设置则为sheet[1,2,...]</td>
+    </tr>
+    <tr>
+        <td>rowNumber</td>
+        <td>boolean</td>
+        <td>是否显示行号</td>
+        <td></td>
     </tr>
     <tr>
         <td>title</td>
@@ -146,6 +153,11 @@ xyz_export.sheet({
                     <td>formatter</td>
                     <td>格式化函数</td>
                     <td>parameter1:字段值, parameter2:行索引, parameter3:行数据</td>
+                </tr>
+                <tr>
+                    <td>merge</td>
+                    <td>合并</td>
+                    <td>目前仅实现了合并行,此配置属性以后可能会发生改变(mergeRow,mergeCol)</td>
                 </tr>
             </table>
         </td>
