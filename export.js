@@ -1,4 +1,4 @@
-﻿/*
+/*
  * author:xyz
  */
 
@@ -6,27 +6,28 @@ var xyz_export = function () {
     let styles;
     let def_opt = {
         rowHeight: 13.5,
-        headHeight: 0,
-        fontColor:"#000000",
+        headHeight: 15,
+        fontColor: "#000000",
+        titleSize: 12,
         border: {
             style: "",
             color: ""
         }
     };
-    let border_style={
+    let border_style = {
         "default": "Continuous,0",
         "default1": "Continuous,1",
         "default2": "Continuous,2",
         "default3": "Continuous,3",
-        "dot":"Dot,1",
+        "dot": "Dot,1",
         "dash": "Dash,1",
         "dash1": "Dash,2",
         "dashDot": "DashDot,1",
         "dashDot1": "DashDot,2",
         "dashDots": "DashDotDot,1",
         "dashDots1": "DashDotDot,2",
-        "slantDashDot":"SlantDashDot,2",
-        "double":"Double,3"
+        "slantDashDot": "SlantDashDot,2",
+        "double": "Double,3"
     }
 
     function createEle(type) {
@@ -39,11 +40,11 @@ var xyz_export = function () {
             tmp[name] = o[name];
         for (let name in s) {
             if (typeof (tmp[name]) == "object" && typeof (s[name]) == "object")
-                tmp[name]=_opt(s[name], tmp[name]);
+                tmp[name] = _opt(s[name], tmp[name]);
             else
                 if (s[name] == tmp[name]) continue;
                 else
-                    tmp[name] = s[name]||tmp[name];
+                    tmp[name] = s[name] || tmp[name];
         }
         return tmp;
     }
@@ -81,7 +82,7 @@ var xyz_export = function () {
     function generate_style(s, k) {
         let border;
         let fontColor = s.fontColor;
-        if (border_style[s.border.style]){
+        if (border_style[s.border.style]) {
             let style = border_style[s.border.style].split(",")[0];
             let width = border_style[s.border.style].split(",")[1];
             let color = s.border.color || "#000000";
@@ -103,12 +104,21 @@ var xyz_export = function () {
             <Protection/>
             </Style>`;
         styles.push(style);
-        debugger;
+        let style_title = `<Style ss:ID="cs${k}_title">
+            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+            <Borders>
+            ${border}
+            </Borders>
+            <Font ss:FontName="宋体" x:CharSet="134" ss:Size="${s.titleSize}" ss:Color="${fontColor}"/>
+            <Interior/>
+            <NumberFormat/>
+            <Protection/>
+            </Style>`;
+        styles.push(style_title);
     }
 
     
-
-    function generate_sheet(data,sheets) {
+    function generate_sheet(data, sheets) {
         let T_sheet = createEle("Worksheet");
         let T_table = createEle("Table");
         let T_column = createEle("Column");
@@ -117,9 +127,9 @@ var xyz_export = function () {
         let T_D = createEle("Data");
         T_D.setAttribute("ss:Type", "String");
         let th = T_row.cloneNode();
-        
+
         let sheet_list = [];
-        let sheets_length=sheets.length;
+        let sheets_length = sheets.length;
         for (let k = 0; k < sheets_length; k++) {
             let opt;
             let sheet = T_sheet.cloneNode();
@@ -127,55 +137,96 @@ var xyz_export = function () {
             if (sheets[k].style) {
                 opt = _opt(sheets[k].style, def_opt)
                 if (opt.border) generate_style(opt, k);
-            };
+            }
 
+            let offset_rownumber = 0;//show rownum
+            if (sheets[k].rowNumber)
+                offset_rownumber = 1;
             sheet.setAttribute("ss:Name", sheets[k].sheetName ? sheets[k].sheetName : sheets[k].title ? sheets[k].title.text ? sheets[k].title.text : ("sheet" + (k + 1)) : ("sheet" + (k + 1)));
-            table.setAttribute("ss:ExpandedColumnCount", sheets[k].body.length);
+            table.setAttribute("ss:ExpandedColumnCount", sheets[k].body.length + offset_rownumber);
             table.setAttribute("ss:ExpandedRowCount", data[k].length + 1 + (sheets[k].title ? 1 : 0));
             table.setAttribute("ss:DefaultColumnWidth", "54");
             table.setAttribute("ss:DefaultRowHeight", opt.rowHeight);
-            
+
             let body = sheets[k].body;
             let body_length = body.length;
             let data_length = data[k].length;
-            
+
+            let pre_val = "";
+            let cursor_row = 0;
+            let merge_row = 0;
+            let mergeCell_list = [];
+
             for (let i = 0; i < data[k].length; i++) {
                 let row = T_row.cloneNode();
                 for (let j = 0; j < body_length; j++) {
                     if (i == 0) {
                         let cell = T_cell.cloneNode();
-                        cell.setAttribute("ss:StyleID", "cs"+k);
-                        cell.appendChild(T_D.cloneNode()).innerHTML = body[j].text?body[j].text:("column"+(j+1));
+                        cell.setAttribute("ss:StyleID", "cs" + k);
+                        cell.appendChild(T_D.cloneNode()).innerHTML = body[j].text ? body[j].text : ("column" + (j + 1));
+                        if (j == 0 && sheets[k].rowNumber) {
+                            let cell = T_cell.cloneNode();
+                            cell.setAttribute("ss:StyleID", "cs" + k);
+                            cell.appendChild(T_D.cloneNode()).innerHTML = "序号";
+                            th.appendChild(cell);
+                        }
                         th.appendChild(cell);//create table head
                         if (body[j].width) {
                             let column = T_column.cloneNode();
-                            if (j == 0)
+                            if (j == 0) {
+                                if (sheets[k].rowNumber) {
+                                    let column = T_column.cloneNode();
+                                    column.setAttribute("ss:Width", 40);
+                                    table.appendChild(column);
+                                }
                                 column.setAttribute("ss:Width", body[j].width);
+                            }
                             else
                                 if (body[j - 1].width)
                                     column.setAttribute("ss:Width", body[j].width);
                                 else {
-                                    column.setAttribute("ss:Index", j + 1);
+                                    column.setAttribute("ss:Index", j + 1 + offset_rownumber);
                                     column.setAttribute("ss:Width", body[j].width);
                                 }
                             table.appendChild(column);//append column set
                         }
                     }
+                    if (j == 0 && sheets[k].rowNumber) {//rownum
+                        let cell = T_cell.cloneNode();
+                        cell.setAttribute("ss:StyleID", "cs" + k);
+                        cell.appendChild(T_D.cloneNode()).innerHTML = (i + 1);
+                        row.appendChild(cell);
+                    }
                     let cell = T_cell.cloneNode();
-                    cell.setAttribute("ss:StyleID", "cs"+k);
-                    let val=data[k][i][body[j].field ? body[j].field : function () { throw "Field is null";}()]?data[k][i][body[j].field]:"";
-                    cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val,i,data[k][j]) : val;
+                    cell.setAttribute("ss:StyleID", "cs" + k);
+                    let val = data[k][i][body[j].field ? body[j].field : function () { throw "Field is null"; }()] ? data[k][i][body[j].field] : "";
+                    if (body[j].merge) {
+                        if (pre_val != val) {
+                            pre_val = val;
+                            cursor_row = i;
+                            if (merge_row != 0) {
+                                mergeCell_list[mergeCell_list.length - 1].setAttribute("ss:MergeDown", merge_row);
+                            }
+                            mergeCell_list.push(cell);
+                            merge_row = 0;
+                        } else {
+                            merge_row++;
+                            continue;
+                        }
+                    } else if (j > 0 && body[j-1].merge) {
+                        cell.setAttribute("ss:Index", j + 1 + offset_rownumber);
+                    }
+                    cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val, i, data[k][i]) : val;
                     row.appendChild(cell);//create data row
                 }
                 if (i == 0) {
                     if (sheets[k].title) {
                         let row = T_row.cloneNode();
                         let cell = T_cell.cloneNode();
-
                         row.setAttribute("ss:Height", sheets[k].title.height ? sheets[k].title.height : 50);
-                        cell.setAttribute("ss:StyleID", "cs"+k);
-                        cell.setAttribute("ss:MergeAcross", sheets[k].body.length - 1);
-                        cell.appendChild(T_D.cloneNode()).innerHTML = sheets[k].title.text ? sheets[k].title.text : sheets[k].sheetName?sheets[k].sheetName:("sheet" + (k + 1));
+                        cell.setAttribute("ss:StyleID", "cs" + k + "_title");
+                        cell.setAttribute("ss:MergeAcross", sheets[k].body.length - 1 + offset_rownumber);
+                        cell.appendChild(T_D.cloneNode()).innerHTML = sheets[k].title.text ? sheets[k].title.text : sheets[k].sheetName ? sheets[k].sheetName : ("sheet" + (k + 1));
                         row.appendChild(cell);
                         table.appendChild(row);//append  table title
                     }
@@ -192,6 +243,6 @@ var xyz_export = function () {
     }
 
     return {
-        sheet:sheet
+        sheet: sheet
     }
 }();
