@@ -8,7 +8,7 @@ Docs
 ```javascript
 xyz_export.sheet({
     fileName:"计划导出",
-    data:[[a:1,b:2,c:3],...],
+    data:[[{a:1,b:2,c:3},{a:2,b:2,c:5}...],...],
     sheets:[
         {
             sheetName:"sheet1",
