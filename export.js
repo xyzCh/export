@@ -1,20 +1,34 @@
 /*
  * author:xyz
+ * Data:2018-11-21
  */
 
-var xyz_export = function () {
-    let styles;
-    let def_opt = {
-        rowHeight: 13.5,
+var Exl = function () {
+	
+    let def_BodyOpt = {
         headHeight: 15,
+        rowHeight: 13.5,
+		colWidth:54,
         fontColor: "#000000",
-        titleSize: 12,
+        fontSize: 12,
+		wrapText:true,
         border: {
             style: "",
             color: ""
         }
     };
-    let border_style = {
+	let def_TitleOpt={
+		text:"",
+		height:50,
+		fontColor:"#000000",
+		fontSize:20,
+		wrapText:true,
+		border: {
+            style: "",
+            color: ""
+        }
+	};
+    let border_styles = {
         "default": "Continuous,0",
         "default1": "Continuous,1",
         "default2": "Continuous,2",
@@ -28,7 +42,7 @@ var xyz_export = function () {
         "dashDots1": "DashDotDot,2",
         "slantDashDot": "SlantDashDot,2",
         "double": "Double,3"
-    }
+    };
 
     function createEle(type) {
         return document.createElementNS("urn:schemas-microsoft-com:office:spreadsheet", type);
@@ -49,8 +63,18 @@ var xyz_export = function () {
         return tmp;
     }
 
+	function copy(arr){
+		let res=[];
+		for(let i=0;i<arr.length;i++){
+			if(arr[i] instanceof Array)
+				res[i]=copy(arr[i]);
+			else
+				res[i]=arr[i];
+		}
+		return res;
+	}
+
     function sheet(obj) {
-        styles = [];
         if (obj.data.length < 1 || obj.sheets.length < 1)
             throw "setting error,Please ensure that the length of data and sheet is greater than 1";
         if (obj.data.length < obj.sheets.length)
@@ -71,177 +95,239 @@ var xyz_export = function () {
             xmlns:x="urn:schemas-microsoft-com:office:excel"
             xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
             xmlns:html="http://www.w3.org/TR/REC-html40">
-         <Styles>
-         ${styles.join("")}
-         </Styles>
         ${bd}
         </Workbook>`;
         return template;
     }
 
-    function generate_style(s, k) {
+	
+
+	let T_styles = createEle("Styles");
+	let T_style = createEle("Style");
+	let T_borders=createEle("Borders");
+	let T_border=createEle("Border");
+	let T_sheet = createEle("Worksheet");
+	let T_table = createEle("Table");
+	let T_column = createEle("Column");
+	let T_row = createEle("Row");
+	let T_cell = createEle("Cell");
+	let T_th = T_row.cloneNode();
+	let T_D = createEle("Data");
+	T_D.setAttribute("ss:Type", "String");
+	
+
+    function generate_style(s, k,styles,kind) {
         let border;
         let fontColor = s.fontColor;
-        if (border_style[s.border.style]) {
-            let style = border_style[s.border.style].split(",")[0];
-            let width = border_style[s.border.style].split(",")[1];
-            let color = s.border.color || "#000000";
-            border = `<Border ss:Position="Bottom" ss:LineStyle="${style}" ss:Weight="${width}" ss:Color="${color}"/>
-                <Border ss:Position="Left" ss:LineStyle="${style}" ss:Weight="${width}"  ss:Color="${color}"/>
-                <Border ss:Position="Right" ss:LineStyle="${style}" ss:Weight="${width}"  ss:Color="${color}"/>
-                <Border ss:Position="Top" ss:LineStyle="${style}" ss:Weight="${width}"  ss:Color="${color}"/>`;
+		let fontSize = s.fontSize;
+		let WrapText = s.wrapText?1:0;
+		let style=T_style.cloneNode();
+		let alignment=createEle("Alignment");
+		alignment.setAttribute("ss:Horizontal","Center");
+		alignment.setAttribute("ss:Vertical","Center");
+		alignment.setAttribute("ss:WrapText",WrapText);
+		style.appendChild(alignment);
+        if (border_styles[s.border.style]) {
+            let border_style = border_styles[s.border.style].split(",")[0];
+            let border_width = border_styles[s.border.style].split(",")[1];
+            let border_color = s.border.color || "#000000";
+			let position=["Bottom","Left","Right","Top"];
+			let borders=T_borders.cloneNode();
+			for(let i=0;i<4;i++){
+				let border=T_border.cloneNode();
+				border.setAttribute("ss:Position",position[i]);
+				border.setAttribute("ss:LineStyle",border_style);
+				border.setAttribute("ss:Weight",border_width);
+				border.setAttribute("ss:Color",border_color);
+				borders.appendChild(border);
+				style.appendChild(borders);
+			}
         }
-        else
-            boder = "";
-        let style = `<Style ss:ID="cs${k}">
-            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
-            <Borders>
-            ${border}
-            </Borders>
-            <Font ss:FontName="宋体" x:CharSet="134" ss:Size="12" ss:Color="${fontColor}"/>
-            <Interior/>
-            <NumberFormat/>
-            <Protection/>
-            </Style>`;
-        styles.push(style);
-        let style_title = `<Style ss:ID="cs${k}_title">
-            <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
-            <Borders>
-            ${border}
-            </Borders>
-            <Font ss:FontName="宋体" x:CharSet="134" ss:Size="${s.titleSize}" ss:Color="${fontColor}"/>
-            <Interior/>
-            <NumberFormat/>
-            <Protection/>
-            </Style>`;
-        styles.push(style_title);
+		let font=createEle("Font");
+		font.setAttribute("ss:FontName","宋体");
+		font.setAttribute("x:CharSet","134");
+		font.setAttribute("ss:Size",fontSize);
+		font.setAttribute("ss:Color",fontColor);
+		style.appendChild(font);
+		style.setAttribute("ss:ID", "cs"+k+(kind?"_"+kind:""));
+        styles.appendChild(style);
     }
 
-    
     function generate_sheet(data, sheets) {
-        let T_sheet = createEle("Worksheet");
-        let T_table = createEle("Table");
-        let T_column = createEle("Column");
-        let T_row = createEle("Row");
-        let T_cell = createEle("Cell");
-        let T_D = createEle("Data");
-        T_D.setAttribute("ss:Type", "String");
-        let th = T_row.cloneNode();
-
         let sheet_list = [];
+		let styles=T_styles.cloneNode();
         let sheets_length = sheets.length;
         for (let k = 0; k < sheets_length; k++) {
-            let opt;
-            let sheet = T_sheet.cloneNode();
+			let sheet = T_sheet.cloneNode();
             let table = T_table.cloneNode();
-            if (sheets[k].style) {
-                opt = _opt(sheets[k].style, def_opt)
-                if (opt.border) generate_style(opt, k);
-            }
+			let _body=copy(sheets[k].body);
+			if (sheets[k].rowNumber)
+				_body[0].unshift({ field: "rownumber", text: "序号", width: "30", rowspan: sheets[k].body.length });
+			let s_body=spreadBody(copy(_body));
+			let _bodyopt = _opt(sheets[k].style||{}, def_BodyOpt);
+			let _titleopt=_opt(sheets[k].title||{},def_TitleOpt);
+            generate_style(_bodyopt,k,styles);
 
-            let offset_rownumber = 0;//show rownum
-            if (sheets[k].rowNumber)
-                offset_rownumber = 1;
-            sheet.setAttribute("ss:Name", sheets[k].sheetName ? sheets[k].sheetName : sheets[k].title ? sheets[k].title.text ? sheets[k].title.text : ("sheet" + (k + 1)) : ("sheet" + (k + 1)));
-            table.setAttribute("ss:ExpandedColumnCount", sheets[k].body.length + offset_rownumber);
-            table.setAttribute("ss:ExpandedRowCount", data[k].length + 1 + (sheets[k].title ? 1 : 0));
-            table.setAttribute("ss:DefaultColumnWidth", "54");
-            table.setAttribute("ss:DefaultRowHeight", opt.rowHeight);
-
-            let body = sheets[k].body;
-            let body_length = body.length;
-            let data_length = data[k].length;
-
-            let pre_val = "";
-            let cursor_row = 0;
-            let merge_row = 0;
-            let mergeCell_list = [];
-
-            for (let i = 0; i < data[k].length; i++) {
-                let row = T_row.cloneNode();
-                for (let j = 0; j < body_length; j++) {
-                    if (i == 0) {
-                        let cell = T_cell.cloneNode();
-                        cell.setAttribute("ss:StyleID", "cs" + k);
-                        cell.appendChild(T_D.cloneNode()).innerHTML = body[j].text ? body[j].text : ("column" + (j + 1));
-                        if (j == 0 && sheets[k].rowNumber) {
-                            let cell = T_cell.cloneNode();
-                            cell.setAttribute("ss:StyleID", "cs" + k);
-                            cell.appendChild(T_D.cloneNode()).innerHTML = "序号";
-                            th.appendChild(cell);
-                        }
-                        th.appendChild(cell);//create table head
-                        if (body[j].width) {
-                            let column = T_column.cloneNode();
-                            if (j == 0) {
-                                if (sheets[k].rowNumber) {
-                                    let column = T_column.cloneNode();
-                                    column.setAttribute("ss:Width", 40);
-                                    table.appendChild(column);
-                                }
-                                column.setAttribute("ss:Width", body[j].width);
-                            }
-                            else
-                                if (body[j - 1].width)
-                                    column.setAttribute("ss:Width", body[j].width);
-                                else {
-                                    column.setAttribute("ss:Index", j + 1 + offset_rownumber);
-                                    column.setAttribute("ss:Width", body[j].width);
-                                }
-                            table.appendChild(column);//append column set
-                        }
-                    }
-                    if (j == 0 && sheets[k].rowNumber) {//rownum
-                        let cell = T_cell.cloneNode();
-                        cell.setAttribute("ss:StyleID", "cs" + k);
-                        cell.appendChild(T_D.cloneNode()).innerHTML = (i + 1);
-                        row.appendChild(cell);
-                    }
-                    let cell = T_cell.cloneNode();
-                    cell.setAttribute("ss:StyleID", "cs" + k);
-                    let val = data[k][i][body[j].field ? body[j].field : function () { throw "Field is null"; }()] ? data[k][i][body[j].field] : "";
-                    if (body[j].merge) {
-                        if (pre_val != val) {
-                            pre_val = val;
-                            cursor_row = i;
-                            if (merge_row != 0) {
-                                mergeCell_list[mergeCell_list.length - 1].setAttribute("ss:MergeDown", merge_row);
-                            }
-                            mergeCell_list.push(cell);
-                            merge_row = 0;
-                        } else {
-                            merge_row++;
-                            continue;
-                        }
-                    } else if (j > 0 && body[j-1].merge) {
-                        cell.setAttribute("ss:Index", j + 1 + offset_rownumber);
-                    }
-                    cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val, i, data[k][i]) : val;
-                    row.appendChild(cell);//create data row
-                }
-                if (i == 0) {
-                    if (sheets[k].title) {
-                        let row = T_row.cloneNode();
-                        let cell = T_cell.cloneNode();
-                        row.setAttribute("ss:Height", sheets[k].title.height ? sheets[k].title.height : 50);
-                        cell.setAttribute("ss:StyleID", "cs" + k + "_title");
-                        cell.setAttribute("ss:MergeAcross", sheets[k].body.length - 1 + offset_rownumber);
-                        cell.appendChild(T_D.cloneNode()).innerHTML = sheets[k].title.text ? sheets[k].title.text : sheets[k].sheetName ? sheets[k].sheetName : ("sheet" + (k + 1));
-                        row.appendChild(cell);
-                        table.appendChild(row);//append  table title
-                    }
-                    if (opt.headHeight != 0)
-                        th.setAttribute("ss:Height", opt.headHeight);
-                    table.appendChild(th);//append table head
-                }
-                table.appendChild(row);//append data row on the table
-            }
+            generate_Column(s_body, table);
+			if(sheets[k].title){
+				generate_style(_titleopt, k,styles,"title");
+				generate_Title(s_body.length, _titleopt,sheets[k].sheetName, k, table);
+			}
+            generate_Head(copy(_body), _bodyopt, k, table);
+			let datarows=generate_Data(s_body,data[k],table,k,sheets[k].rowNumber);
+			sheet.setAttribute("ss:Name", sheets[k].sheetName ? sheets[k].sheetName : _titleopt.text ? _titleopt.text : ("sheet" + (k + 1)));
+            table.setAttribute("ss:ExpandedColumnCount", s_body.length);
+            table.setAttribute("ss:ExpandedRowCount", datarows + sheets[k].body.length + (sheets[k].title ? 1 : 0));
+            table.setAttribute("ss:DefaultColumnWidth", _bodyopt.colWidth);
+            table.setAttribute("ss:DefaultRowHeight", _bodyopt.rowHeight);
             sheet.appendChild(table);
             sheet_list.push(sheet.outerHTML);
         }
+		sheet_list.unshift(styles.outerHTML);
         return sheet_list;
     }
 
+	function spreadBody(body) {
+		return pool(body);
+		function pool(bd){
+			let rowIndex=arguments[1]?arguments[1]:0;
+			let readWidth=arguments[2]?arguments[2]:0;
+			let creadWidth=0;
+			let cols=[];
+			let row=bd[rowIndex];
+			let requiredSpan=bd.length-rowIndex;
+			for(let i=0;i<row.length;){
+				let rowspan=~~row[i].rowspan==0?1:~~row[i].rowspan;
+				let colspan=~~row[i].colspan==0?1:~~row[i].colspan;
+				if(rowspan<requiredSpan){
+					cols=cols.concat(pool(bd,rowIndex+rowspan,colspan));
+				}else{
+					cols.push(row[i]);
+				}
+				row.shift();
+				creadWidth+=colspan;
+				if(creadWidth==readWidth)
+					break;
+			}
+			return cols;
+		}
+	}
+	
+	function generate_Column(body,table) {
+		for (let i = 0; i < body.length; i++) {
+			let column = T_column.cloneNode();
+			if(body[i].width)
+				column.setAttribute("ss:Width", body[i].width);
+			table.appendChild(column);
+		}
+	}
+
+	function generate_Title(merge, opt,sheetName, k,table) {
+		let row = T_row.cloneNode();
+		let cell = T_cell.cloneNode();
+		let data = T_D.cloneNode();
+		data.innerHTML = opt.text?opt.text:sheetName?sheetName:("sheet" + (k + 1));
+		cell.appendChild(data);
+		cell.setAttribute("ss:StyleID", "cs" + k + "_title");
+		cell.setAttribute("ss:MergeAcross", merge-1);
+		row.appendChild(cell);
+		row.setAttribute("ss:Height", opt.height);
+		table.appendChild(row);
+	}
+	
+	function generate_Head(body,opt,k,table) {
+		let cols=[],cursor=1;
+		for(let i=0;i<body.length;i++){
+			let row=T_row.cloneNode();
+			row.setAttribute("ss:Height",opt.headHeight);
+			table.appendChild(row);
+			cols[i]=row;
+		}
+		pool(body);
+		return cols;
+		function pool(bd){
+			let rowIndex=arguments[1]?arguments[1]:0;
+			let readWidth=arguments[2]?arguments[2]:0;
+			let creadWidth=0;
+			let row=bd[rowIndex];
+			let requiredSpan=bd.length-rowIndex;
+			for(let i=0;i<row.length;){
+				let cell=T_cell.cloneNode();
+				let data=T_D.cloneNode();
+				let rowspan=~~row[i].rowspan==0?1:~~row[i].rowspan;
+				let colspan=~~row[i].colspan==0?1:~~row[i].colspan;
+				data.innerHTML=row[i].text||"column"+cursor;
+				cell.appendChild(data);
+				cell.setAttribute("ss:StyleID","cs"+k);
+				if(rowspan>1){
+					cell.setAttribute("ss:MergeDown",rowspan-1);
+				}
+				if(colspan>1){
+					cell.setAttribute("ss:MergeAcross",colspan-1);
+				}
+				if(creadWidth==0)
+					cell.setAttribute("ss:Index",cursor);
+				cols[rowIndex].appendChild(cell);
+				row.shift();
+				if(rowspan<requiredSpan){
+					pool(bd,rowIndex+rowspan,colspan);
+				}else{
+					cursor++;
+				}
+				creadWidth+=colspan;
+				if(creadWidth==readWidth)
+					break;
+			}
+		}
+	}
+	
+	function generate_Data(body,data,table,k,rownum){
+		let pre_val=[],mergeRow_list=[],mergeCell_list=[];
+		let rows=data.length;
+		for(let z=0;z<body.length;z++){
+			pre_val.push("");
+			mergeRow_list.push(0);
+		}
+		
+		for(let i=0;i<data.length;i++){
+			let row=T_row.cloneNode();
+			let j=0;
+			if(rownum){
+				j=1;
+				let cell = T_cell.cloneNode();
+				cell.setAttribute("ss:StyleID", "cs" + k);
+				cell.appendChild(T_D.cloneNode()).innerHTML = (i + 1);
+				row.appendChild(cell);
+			}
+			for(;j<body.length;j++){
+				let cell = T_cell.cloneNode();
+				cell.setAttribute("ss:StyleID", "cs" + k);
+				if (j > 0 && body[j-1].merge) 
+					cell.setAttribute("ss:Index", j + 1);
+				let val = data[i][body[j].field ? body[j].field : function () { throw "Field is null"; }()] ? data[i][body[j].field] : "";
+				if (body[j].merge) {
+					if (pre_val[j] != val) {
+						pre_val[j] = val;
+						if (mergeRow_list[j] != 0) {
+							mergeCell_list[j].setAttribute("ss:MergeDown", mergeRow_list[j]);
+						}
+						mergeCell_list[j]=cell;
+						mergeRow_list[j] = 0;
+					} else {
+						mergeRow_list[j]+=1;
+						if(i==data.length-1 && mergeRow_list[j] != 0)
+							mergeCell_list[j].setAttribute("ss:MergeDown", mergeRow_list[j]);
+						continue;
+					}
+				}
+				cell.appendChild(T_D.cloneNode()).innerHTML = body[j].formatter ? body[j].formatter(val, i, data[i]) : val;
+				row.appendChild(cell);
+			}
+			table.appendChild(row);
+		}
+		return rows;
+	}
+	
     return {
         sheet: sheet
     }
