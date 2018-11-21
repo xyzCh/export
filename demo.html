@@ -1,0 +1,71 @@
+<html>
+
+<head>
+<script src='export.js'></script>
+<script>
+function a(){
+Exl.sheet({
+    fileName:"test",
+    data:[[{a:1,b:3,c:3,d:4,e:2,f:2,g:2,h:2,i:2,j:2,k:2},{a:1,b:2,c:5,d:6,e:2,f:2,g:2,h:2,i:2,j:2,k:2},{a:1,b:2,c:5,d:6,e:2,f:2,g:2,h:2,i:2,j:2,k:2}]],
+    sheets:[
+        {
+            sheetName:"sheet1",
+            rowNumber:true,
+            title: {
+                text: "test",
+                height: 50,
+				fontColor:"#000000",
+				fontSize:20,
+				wrapText:true,
+				border: {
+					style: "",
+					color: ""
+				}
+            },
+            style:{
+                headHeight:15,
+                rowHeight:13.5,
+				colWidth:54,
+                fontColor:"#000000",
+				fontSize:12,
+				wrapText:true,
+                border:{
+                    style:"default1",
+                    color:"#000000"
+                }
+            },
+            body:[[
+			{field:"a",text:"column1",rowspan:3,width:50,merge:true,formatter:function(value,rowIndex,rowData){
+				return value;
+			}},
+			{field:"b",text:"column2",rowspan:3,width:50,merge:true},
+			{text:"",colspan:3,width:50},
+			{field:"f",text:"",rowspan:3,width:50},
+			{text:"a",colspan:2,width:50},
+			{text:"t",rowspan:2,width:50},
+			{text:"d",rowspan:2,colspan:2,width:50}
+			],[
+			{field:"c",text:"",rowspan:2,width:50},
+			{text:"",colspan:2,width:50},
+			{field:"g",text:"b",rowspan:2,width:50},
+			{field:"h",text:"c",rowspan:2,width:50}
+			],[
+			{field:"d",text:"",width:50,merge:true},
+			{field:"e",text:"",width:50},
+			{field:"i",text:"test",width:50},
+			{field:"j",text:"m",width:50},
+			{field:"k",text:"n",width:50,merge:true}
+			]]
+        }
+    ]
+});
+}
+
+</script>
+</head>
+
+<body>
+	<button onclick="a()">导出excel</button>
+</body>
+
+</html>
