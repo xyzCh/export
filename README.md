@@ -16,13 +16,13 @@ xyz_export.sheet({
             title: {
                 text: "test",
                 height: 50,
-				fontColor:"#000000",
-				fontSize:20,
-				wrapText:true,
-				border: {
-					style: "",
-					color: ""
-				}
+		fontColor:"#000000",
+		fontSize:20,
+		wrapText:true,
+		border: {
+			style: "",
+			color: ""
+		}
             },
             style:{
                 headHeight:15,
