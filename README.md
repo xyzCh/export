@@ -4,36 +4,57 @@ export
 
 Docs
 ---
-**用法**
+**用法**  
 ```javascript
 xyz_export.sheet({
     fileName:"计划导出",
-    data:[[{a:1,b:2,c:3},{a:2,b:2,c:5}...],...],
+    data:[[{a:1,b:2,c:3,d:4,e:5,f:6},{a:2,b:2,c:5,d:4,e:5,f:6}...],...],
     sheets:[
         {
             sheetName:"sheet1",
             rowNumber:true,
             title: {
-                text: "xx月xx日计划",
-                height: 50
+                text: "test",
+                height: 50,
+				fontColor:"#000000",
+				fontSize:20,
+				wrapText:true,
+				border: {
+					style: "",
+					color: ""
+				}
             },
             style:{
-                headHeight:30,
-                rowHeight:15,
-                fontColor:"",
+                headHeight:15,
+                rowHeight:13.5,
+				colWidth:54,
+                fontColor:"#000000",
+				fontSize:12,
+				wrapText:true,
                 border:{
-                    style:"default",
+                    style:"default1",
                     color:"#000000"
                 }
             },
-            body: [
-                { field: "a", text: "字段1", width: 50, formatter:function(value,index,row){
+            body: [[
+                { field: "a", text: "字段1", width: 50, rowspan:3, formatter:function(value,index,rowData){
                         .....
                         return value;
                     }
                 },
-                { field: "b", text: "字段2", width: 50, merge:true },//此列(相邻且相同)数据会发生合并
-                { field: "c", text: "字段3", width: 50 }
+                { field: "b", text: "字段2", width: 50, rowspan:3, merge:true },//此列(相邻且相同)数据会发生合并
+                { field: "c", text: "字段3", width: 50, rowspan:3 },
+                { text:"合并", colspan:3 },
+                { text:"合并2", colspan:2, rowspan:2 }
+                ],[
+                    { field:"d", text:"字段4", width: 50, rowspan:2 },
+                    { text:"合并1", colspan:2 }
+                ],[
+                    { field:"e", text:"字段5", width: 50, rowspan:2 },
+                    { field:"f", text:"字段6", width: 50, rowspan:2 },
+                    { field:"g", text:"字段7", width: 50, rowspan:2 },
+                    { field:"h", text:"字段8", width: 50, rowspan:2 }
+                ]
             ]
         },...
     ]
@@ -59,7 +80,7 @@ xyz_export.sheet({
         <td>sheetName</td>
         <td>string</td>
         <td>每个工作表的名字</td>
-        <td>如果title.text已设置,则默认title.text,当两者都未设置则为sheet[1,2,...]</td>
+        <td>如果sheetName未设置,但title.text已设置,则默认title.text,当两者都未设置则为sheet[1,2,...]</td>
     </tr>
     <tr>
         <td>rowNumber</td>
@@ -77,12 +98,32 @@ xyz_export.sheet({
                 <tr>
                     <td>title.text</td>
                     <td>标题名字</td>
-                    <td>如果sheetName已设置,text未设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]</td>
+                    <td>如果text未设置,但sheetName已设置,则text默认为sheetName,当两者都未设置则为sheet[1,2,...]</td>
                 </tr>
                 <tr>
                     <td>title.height</td>
                     <td>标题高度</td>
                     <td>默认50</td>
+                </tr>
+                <tr>
+                    <td>title.fontColor</td>
+                    <td>标题字体颜色</td>
+                    <td>默认#000000</td>
+                </tr>
+                <tr>
+                    <td>title.fontSize</td>
+                    <td>标题字体大小</td>
+                    <td>默认20</td>
+                </tr>
+                <tr>
+                    <td>title.wrapText</td>
+                    <td>自动换行</td>
+                    <td>默认true</td>
+                </tr>
+                <tr>
+                    <td>title.border</td>
+                    <td>标题边框</td>
+                    <td>同style.border</td>
                 </tr>
             </table>
         </td>
@@ -104,9 +145,24 @@ xyz_export.sheet({
                     <td>默认13.5</td>
                 </tr>
                 <tr>
+                    <td>style.colWidth</td>
+                    <td>默认列宽</td>
+                    <td>默认54</td>
+                </tr>
+                <tr>
                     <td>style.fontColor</td>
                     <td>字体颜色</td>
                     <td>默认#000000</td>
+                </tr>
+                <tr>
+                    <td>style.fontSize</td>
+                    <td>字体大小</td>
+                    <td>默认12</td>
+                </tr>
+                <tr>
+                    <td>style.wrapText</td>
+                    <td>自动换行</td>
+                    <td>默认true</td>
                 </tr>
                 <tr>
                     <td>style.border</td>
@@ -147,7 +203,7 @@ xyz_export.sheet({
                 <tr>
                     <td>width</td>
                     <td>列宽</td>
-                    <td></td>
+                    <td>未设置时使用style.colWidth默认列宽</td>
                 </tr>
                 <tr>
                     <td>formatter</td>
@@ -156,8 +212,18 @@ xyz_export.sheet({
                 </tr>
                 <tr>
                     <td>merge</td>
-                    <td>合并</td>
-                    <td>目前仅实现了合并行,此配置属性以后可能会发生改变(mergeRow,mergeCol)</td>
+                    <td>合并相同数据列</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>rowspan</td>
+                    <td>合并表头(行)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>colspan</td>
+                    <td>合并表头(列)</td>
+                    <td></td>
                 </tr>
             </table>
         </td>
