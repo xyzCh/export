@@ -1,6 +1,6 @@
 /*
  * author:xyz
- * Data:2018-11-21
+ * date:2018-11-21
  */
 
 var Exl = function () {
