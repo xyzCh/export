@@ -20,17 +20,17 @@ Exl.sheet({
 		fontSize:20,
 		wrapText:true,
 		border: {
-			style: "",
-			color: ""
+		    style: "",
+		    color: ""
 		}
             },
             style:{
                 headHeight:15,
                 rowHeight:13.5,
-				colWidth:54,
+	     	colWidth:54,
                 fontColor:"#000000",
-				fontSize:12,
-				wrapText:true,
+		fontSize:12,
+		wrapText:true,
                 border:{
                     style:"default1",
                     color:"#000000"
@@ -213,17 +213,17 @@ Exl.sheet({
                 <tr>
                     <td>merge</td>
                     <td>合并相同数据列</td>
-                    <td></td>
+                    <td>bool</td>
                 </tr>
                 <tr>
                     <td>rowspan</td>
                     <td>合并表头(行)</td>
-                    <td></td>
+                    <td>number</td>
                 </tr>
                 <tr>
                     <td>colspan</td>
                     <td>合并表头(列)</td>
-                    <td></td>
+                    <td>number</td>
                 </tr>
             </table>
         </td>
