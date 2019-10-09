@@ -80,7 +80,7 @@ var Exl = function () {
         if (obj.data.length < obj.sheets.length)
             throw "The data length must be less than or equal to the length of the worksheet";
         let sheet_list = generate_sheet(obj.data, obj.sheets);
-        file = generate_file(sheet_list);
+        let file = generate_file(sheet_list);
         let a = document.createElement('a');
         a.href = 'data:application/vnd.ms-excel;base64,' + window.btoa(unescape(encodeURIComponent(file)));
         a.download = obj.fileName ? obj.fileName : "exportSheet";
