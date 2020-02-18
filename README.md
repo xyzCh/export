@@ -43,7 +43,7 @@ Exl.sheet({
                         return value;
                     }
                 },
-                { field: "b", text: "字段2", width: 50, rowspan:3, merge:true },//此列(相邻且相同)数据会发生合并
+                { field: "b", text: "字段2", width: 50, rowspan:3, merge:true },//此列上相同的数据(相邻行)会发生合并
                 { field: "c", text: "字段3", width: 50, rowspan:3 },
                 { text:"合并", colspan:3 },
                 { text:"合并2", colspan:2, rowspan:2 }
@@ -219,7 +219,7 @@ Exl.sheet({
                 </tr>
                 <tr>
                     <td>merge</td>
-                    <td>合并相同数据列</td>
+                    <td>合并当前列上相同的数据(相邻行)</td>
                     <td>bool</td>
                 </tr>
                 <tr>
