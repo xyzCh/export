@@ -13,6 +13,7 @@ Exl.sheet({
         {
             sheetName:"sheet1",
             rowNumber:true,
+	    showHeadRow:true,
             title: {
                 text: "test",
                 height: 50,
@@ -86,6 +87,12 @@ Exl.sheet({
         <td>rowNumber</td>
         <td>boolean</td>
         <td>是否显示行号</td>
+        <td></td>
+    </tr>
+	<tr>
+        <td>showHeadRow</td>
+        <td>boolean</td>
+        <td>是否显示表头</td>
         <td></td>
     </tr>
     <tr>
